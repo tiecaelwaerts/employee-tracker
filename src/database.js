@@ -1,20 +1,23 @@
-import mysql from 'mysql2';
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
+import pg from "pg";
+const { Pool } = pg;
 
-const connection = mysql.createConnection({
-    host: 'localhost',
+const pool = new Pool ({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    host: 'localhost',
+    database: process.env.DB_NAME,
+    port: 5432
 });
 
-connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to the database:', err.stack);
-        return;
+const connectToDb = async () => {
+    try {
+        await pool.connect();
+    } catch (error) {
+        console.error('Error connecting to database:', error);
+        process.exit(1);
     }
-    console.log('Connected to the database.');
-});
+};
 
-export default connection.promise();
+export { pool, connectToDb };
