@@ -19,5 +19,15 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
-  }
+  },
+  
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiecaelwaerts/employee-tracker.git"
+  },
+  "author": "tyler caelwaerts",
+  "bugs": {
+    "url": "https://github.com/tiecaelwaerts/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/tiecaelwaerts/employee-tracker#readme"
 }
