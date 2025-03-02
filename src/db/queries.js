@@ -1,3 +1,4 @@
+import inquirer from "inquirer";
 import { pool } from "./database.js";
 
 class Db {
