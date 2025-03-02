@@ -1,5 +1,5 @@
-const inquirer = require('inquirer');
-const db = require('./queries');
+const inquirer = "inquirer";
+import db from "./db";
 import { connectToDb } from "./database.js";
 
 await connectToDb();
