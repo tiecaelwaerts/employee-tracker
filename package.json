@@ -1,9 +1,23 @@
 {
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "A cli program to interact with a database to keep track of employees.",
+  "main": "index.js",
+  "type": "module",
+
+  "keywords": [
+    "database"
+  ],
+
   "dependencies": {
     "console.table": "^0.10.0",
     "dotenv": "^16.4.7",
     "inquirer": "^12.4.1",
     "pg": "^8.13.1",
     "postgres": "^3.4.5"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
