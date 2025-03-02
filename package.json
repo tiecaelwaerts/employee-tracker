@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "license": "MIT",
-  "description": "A command-line application that allows the user to manage a company's employees using node, inquirer, and MySQL.",
+  "description": "A command-line application that allows the user to manage a company's employees using node, inquirer, and postgres.",
   "keywords": [
     "database",
     "node"
