@@ -1,6 +1,6 @@
 const inquirer = "inquirer";
 import db from "./db";
-import { connectToDb } from "./database.js";
+import { connectToDb } from "./db/database.js";
 
 await connectToDb();
 

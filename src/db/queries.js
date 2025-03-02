@@ -1,4 +1,4 @@
-import { pool } from "./database.js";
+import { pool } from "../database.js";
 
 const getDepartments = async () => {
     const result = await pool.query('SELECT * FROM department');
