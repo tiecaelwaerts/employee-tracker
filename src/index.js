@@ -1,5 +1,5 @@
-const inquirer = "inquirer";
-import db from "./db";
+import inquirer from "inquirer";
+import db from "./db/queries.js";
 import { connectToDb } from "./db/database.js";
 
 await connectToDb();
@@ -24,58 +24,58 @@ const loadPrompts = () => {
                 'Exit'
             ]
         }
-    ]);
-
-    switch (choice) {
-        case 'View all departments':
-            viewDepartments();
-            break;
-        case 'View all roles':
-            viewRoles();
-            break;
-        case 'View all employees':
-            viewEmployees();
-            break;
-        case 'Add a department':
-            addDepartment();
-            break;
-        case 'Add a role':
-            addRole();
-            break;
-        case 'Add an employee':
-            addEmployee();
-            break;
-        case 'Update an employee role':
-            updateEmployeeRole();
-            break;
-        case 'Delete a department':
-            deleteDepartment();
-            break;
-        case 'Delete a role':
-            deleteRole();
-            break;
-        case 'Delete an employee':
-            deleteEmployee();
-            break;
-        case 'Exit':
-            process.exit(1);
-    }
+    ]).then(({ choice }) => {
+        switch (choice) {
+            case 'View all departments':
+                viewDepartments();
+                break;
+            case 'View all roles':
+                viewRoles();
+                break;
+            case 'View all employees':
+                viewEmployees();
+                break;
+            case 'Add a department':
+                addDepartment();
+                break;
+            case 'Add a role':
+                addRole();
+                break;
+            case 'Add an employee':
+                addEmployee();
+                break;
+            case 'Update an employee role':
+                updateEmployeeRole();
+                break;
+            case 'Delete a department':
+                deleteDepartment();
+                break;
+            case 'Delete a role':
+                deleteRole();
+                break;
+            case 'Delete an employee':
+                deleteEmployee();
+                break;
+            case 'Exit':
+                process.exit(1);
+        }
+    });
 };
 
 const viewDepartments = async () => {
-    const [rows] = await db.getDepartments();
+    const rows = await db.viewDepartments();
     console.table(rows);
     loadPrompts();
 };
 
 const viewRoles = async () => {
-    const [rows] = await db.getRoles();
+    const rows = await db.viewRoles();
     console.table(rows);
     loadPrompts();
 };
 
 const viewEmployees = async () => {
-    const [rows] = await db.getEmployees();
+    const rows = await db.viewEmployees();
     console.table(rows);
     loadPrompts();
 };
@@ -95,7 +95,7 @@ const addDepartment = async () => {
 };
 
 const addRole = async () => {
-    const departments = await db.getDepartments();
+    const departments = await db.findDepartments();
     const role = await inquirer.prompt([
         {
             type: 'input',
@@ -109,99 +109,81 @@ const addRole = async () => {
         },
         {
             type: 'list',
-            name: 'department_id',
+            name: 'department',
             message: 'Select the department for the role:',
-            choices: departments.map(department => ({
-                name: department.name,
-                value: department.id
-            }))
+            choices: departments
         }
     ]);
 
-    await db.addRole(role.title, role.salary, role.department_id);
+    await db.addRole(role);
     console.log('Role added!');
     loadPrompts();
 };
 
 const addEmployee = async () => {
-    const roles = await db.getRoles();
-    const employees = await db.getEmployees();
+    const roles = await db.findRoles();
+    const employees = await db.findEmployees();
     const employee = await inquirer.prompt([
         {
             type: 'input',
-            name: 'first_name',
+            name: 'firstName',
             message: 'Enter the first name of the employee:'
         },
         {
             type: 'input',
-            name: 'last_name',
+            name: 'lastName',
             message: 'Enter the last name of the employee:'
         },
         {
             type: 'list',
-            name: 'role_id',
+            name: 'role',
             message: 'Select the role for the employee:',
-            choices: roles.map(role => ({
-                name: role.title,
-                value: role.id
-            }))
+            choices: roles
         },
         {
             type: 'list',
-            name: 'manager_id',
+            name: 'manager',
             message: 'Select the manager for the employee:',
-            choices: employees.map(employee => ({
-                name: `${employee.first_name} ${employee.last_name}`,
-                value: employee.id
-            }))
+            choices: employees
         }
     ]);
 
-    await db.addEmployee(employee.first_name, employee.last_name, employee.role_id, employee.manager_id);
+    await db.addEmployee(employee);
     console.log('Employee added!');
     loadPrompts();
 };
 
 const updateEmployeeRole = async () => {
-    const employees = await db.getEmployees();
-    const roles = await db.getRoles();
+    const employees = await db.findEmployees();
+    const roles = await db.findRoles();
     const employee = await inquirer.prompt([
         {
             type: 'list',
-            name: 'employee_id',
+            name: 'employee',
             message: 'Select the employee to update:',
-            choices: employees.map(employee => ({
-                name: `${employee.first_name} ${employee.last_name}`,
-                value: employee.id
-            }))
+            choices: employees
         },
         {
             type: 'list',
-            name: 'role_id',
+            name: 'role',
             message: 'Select the new role for the employee:',
-            choices: roles.map(role => ({
-                name: role.title,
-                value: role.id
-            }))
+            choices: roles
         }
     ]);
 
-    await db.updateEmployeeRole(employee.employee_id, employee.role_id);
+    await db.updateEmployeeRole(employee);
     console.log('Employee role updated!');
     loadPrompts();
 };
 
 const deleteDepartment = async () => {
-    const departments = await db.getDepartments();
+    const departments = await db.findDepartments();
     const department = await inquirer.prompt([
         {
             type: 'list',
             name: 'id',
             message: 'Select the department to delete:',
-            choices: departments.map(department => ({
-                name: department.name,
-                value: department.id
-            }))
+            choices: departments
         }
     ]);
 
@@ -211,16 +193,13 @@ const deleteDepartment = async () => {
 };
 
 const deleteRole = async () => {
-    const roles = await db.getRoles();
+    const roles = await db.findRoles();
     const role = await inquirer.prompt([
         {
             type: 'list',
             name: 'id',
             message: 'Select the role to delete:',
-            choices: roles.map(role => ({
-                name: role.title,
-                value: role.id
-            }))
+            choices: roles
         }
     ]);
 
@@ -230,16 +209,13 @@ const deleteRole = async () => {
 };
 
 const deleteEmployee = async () => {
-    const employees = await db.getEmployees();
+    const employees = await db.findEmployees();
     const employee = await inquirer.prompt([
         {
             type: 'list',
             name: 'id',
             message: 'Select the employee to delete:',
-            choices: employees.map(employee => ({
-                name: `${employee.first_name} ${employee.last_name}`,
-                value: employee.id
-            }))
+            choices: employees
         }
     ]);
 
@@ -247,7 +223,5 @@ const deleteEmployee = async () => {
     console.log('Employee deleted!');
     loadPrompts();
 };
-
-
 
 loadPrompts();

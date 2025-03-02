@@ -1,57 +1,59 @@
-import { pool } from "../database.js";
+import { pool } from "./database.js";
 
-const getDepartments = async () => {
-    const result = await pool.query('SELECT * FROM department');
-    return result.rows;
-};
+class Db {
+    
+    async query(text) {
+        try {
+            let response = await pool.query(text);
+            let array = await response.rows;
+            return array;
+        } catch (error) {
+            console.error("There was a problem querying the database:", error);
+            process.exit(1);
+        }
+    }
 
-const getRoles = async () => {
-    const result = await pool.query('SELECT * FROM role');
-    return result.rows;
-};
+    findDepartments() {
+        return this.query('SELECT name, id AS value FROM department ORDER BY name;')
+    }
 
-const getEmployees = async () => {
-    const result = await pool.query('SELECT * FROM employee');
-    return result.rows;
-};
+    viewDepartments() {
+        return this.query('SELECT * FROM department ORDER BY name;');
+    }
 
-const addDepartment = async (name) => {
-    await pool.query('INSERT INTO department (name) VALUES ($1)', [name]);
-};
+    findRoles() {
+        return this.query('SELECT title AS name, id AS value FROM role;');
+    }
 
-const addRole = async (title, salary, department_id) => {
-    await pool.query('INSERT INTO role (title, salary, department_id) VALUES ($1, $2, $3)', [title, salary, department_id]);
-};
+    viewRoles() {
+        return this.query('SELECT r.id, title, name AS department, salary FROM role r INNER JOIN department d on d.id = r.department_id ORDER BY id;');
+    }
 
-const addEmployee = async (first_name, last_name, role_id, manager_id) => {
-    await pool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [first_name, last_name, role_id, manager_id]);
-};
+    findEmployees() {
+        return this.query(`SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employee;`);
+    }
 
-const updateEmployeeRole = async (employee_id, role_id) => {
-    await pool.query('UPDATE employee SET role_id = $1 WHERE id = $2', [role_id, employee_id]);
-};
+    viewEmployees() {
+        return this.query(`SELECT e.id, e.first_name, e.last_name, r.title, d.name AS department, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee e LEFT JOIN role r on e.role_id = r.id
+            LEFT JOIN department d on r.department_id = d.id LEFT JOIN employee m on e.manager_id = m.id ORDER BY e.id;`);
+    }
 
-const deleteDepartment = async (id) => {
-    await pool.query('DELETE FROM department WHERE id = $1', [id]);
-};
+    addDepartment(name) {
+        return this.query(`INSERT INTO department (name) VALUES ('${name}');`);
+    }
 
-const deleteRole = async (id) => {
-    await pool.query('DELETE FROM role WHERE id = $1', [id]);
-};
+    addRole(answers) {
+        return this.query(`INSERT INTO role (title, salary, department_id) VALUES ('${answers.title}', ${answers.salary}, ${answers.department});`);
+    }
 
-const deleteEmployee = async (id) => {
-    await pool.query('DELETE FROM employee WHERE id = $1', [id]);
-};
+    addEmployee(answers) {
+        return this.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES 
+            ('${answers.firstName}', '${answers.lastName}', ${answers.role}, ${answers.manager})`);
+    }
 
-module.exports = {
-    getDepartments,
-    getRoles,
-    getEmployees,
-    addDepartment,
-    addRole,
-    addEmployee,
-    updateEmployeeRole,
-    deleteDepartment,
-    deleteRole,
-    deleteEmployee
-};
+    updateEmployeeRole(answers) {
+        return this.query(`UPDATE employee SET role_id = '${answers.role}' where id = ${answers.employee}`);
+    }   
+}
+
+export default new Db();

@@ -1,11 +1,13 @@
 {
   "name": "employee-tracker",
   "version": "1.0.0",
-  "description": "A cli program to interact with a database to keep track of employees.",
   "main": "index.js",
   "type": "module",
+  "license": "MIT",
+  "description": "A command-line application that allows the user to manage a company's employees using node, inquirer, and MySQL.",
   "keywords": [
-    "database"
+    "database",
+    "node"
   ],
   "dependencies": {
     "console.table": "^0.10.0",
