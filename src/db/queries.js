@@ -54,7 +54,19 @@ class Db {
 
     updateEmployeeRole(answers) {
         return this.query(`UPDATE employee SET role_id = '${answers.role}' where id = ${answers.employee}`);
-    }   
+    }
+
+    deleteDepartment(id) {
+        return this.query(`DELETE FROM department WHERE id = ${id};`);
+    }
+
+    deleteRole(id) {
+        return this.query(`DELETE FROM role WHERE id = ${id};`);
+    }
+
+    deleteEmployee(id) {
+        return this.query(`DELETE FROM employee WHERE id = ${id};`);
+    }
 }
 
 export default new Db();

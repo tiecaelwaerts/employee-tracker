@@ -178,48 +178,69 @@ const updateEmployeeRole = async () => {
 
 const deleteDepartment = async () => {
     const departments = await db.findDepartments();
-    const department = await inquirer.prompt([
+    console.log('Departments from DB:', departments); // Debugging statement
+    const departmentChoices = departments.map(department => ({
+        name: department.name,
+        value: department.value
+    }));
+    console.log('Department choices:', departmentChoices); // Debugging statement
+    const { id } = await inquirer.prompt([
         {
             type: 'list',
             name: 'id',
             message: 'Select the department to delete:',
-            choices: departments
+            choices: departmentChoices
         }
     ]);
+    console.log('Selected department id:', id); // Debugging statement
 
-    await db.deleteDepartment(department.id);
+    await db.deleteDepartment(id);
     console.log('Department deleted!');
     loadPrompts();
 };
 
 const deleteRole = async () => {
     const roles = await db.findRoles();
-    const role = await inquirer.prompt([
+    console.log('Roles from DB:', roles); // Debugging statement
+    const roleChoices = roles.map(role => ({
+        name: role.name,
+        value: role.value
+    }));
+    console.log('Role choices:', roleChoices); // Debugging statement
+    const { id } = await inquirer.prompt([
         {
             type: 'list',
             name: 'id',
             message: 'Select the role to delete:',
-            choices: roles
+            choices: roleChoices
         }
     ]);
+    console.log('Selected role id:', id); // Debugging statement
 
-    await db.deleteRole(role.id);
+    await db.deleteRole(id);
     console.log('Role deleted!');
     loadPrompts();
 };
 
 const deleteEmployee = async () => {
     const employees = await db.findEmployees();
-    const employee = await inquirer.prompt([
+    console.log('Employees from DB:', employees); // Debugging statement
+    const employeeChoices = employees.map(employee => ({
+        name: employee.name,
+        value: employee.value
+    }));
+    console.log('Employee choices:', employeeChoices); // Debugging statement
+    const { id } = await inquirer.prompt([
         {
             type: 'list',
             name: 'id',
             message: 'Select the employee to delete:',
-            choices: employees
+            choices: employeeChoices
         }
     ]);
+    console.log('Selected employee id:', id); // Debugging statement
 
-    await db.deleteEmployee(employee.id);
+    await db.deleteEmployee(id);
     console.log('Employee deleted!');
     loadPrompts();
 };
