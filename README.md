@@ -15,7 +15,7 @@ First you will need your database. In this case PostgreSQL. From here you will n
 
 ## Usage
 To use the program, input npm start in your terminal and follow the prompts. You can watch the tutorial video here as well.
-How to use the application: https://watch.screencastify.com/v/otqG4nEGRFqZ6GV7mIRU
+How to use the application: https://drive.google.com/file/d/1mseWQMSOihkPaqdv43K-Yi1vvAzuuLZM/view
 
 ## Collaborators 
 Thanks to the cohort videos, my classmates and coPilot for making this possible. 
